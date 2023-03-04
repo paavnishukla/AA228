@@ -1,2 +1,2 @@
 # AA228
-Contains Final Project work fpr CS238/AA228
+Contains Final Project work for CS238/AA228
