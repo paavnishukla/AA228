@@ -71,7 +71,7 @@ function visualize_price_trend()
         # Get the price of these 10 flights over the 7 days 
         # Plotting data contains 7 price points for each of the 10 flights
         plot_data = Dict{String, Vector{Float64}}()
-        x = ["13 Mar", "14 Mar", "15 Mar", "16 Mar", "18 Mar", "19 Mar"]
+        x = ["13 Mar", "14 Mar", "15 Mar", "16 Mar", "17 Mar", "18 Mar"]
         p = plot(title = "Flight Price vs Time", lw = 2)
         for flight in unique_flights
             price_data = Vector{Float64}()
@@ -488,7 +488,7 @@ function main()
                 error("Test file not found for ", source)
             end
             println("Testing policy on the test data: ", t_file)
-            ref_test_d = "17/03/2023"
+            ref_test_d = "19/03/2023"
             # Run the test on the given file
             runtest(p_file, t_file, ref_test_d)
             metric_file = replace(t_file,".csv" => "metrics.csv")
