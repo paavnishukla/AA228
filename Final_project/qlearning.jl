@@ -497,5 +497,7 @@ function main()
     end
 end
 
-# main()
-visualize_price_trend()
+# To train/test uncomment this call
+main()
+# To visualize price trend graphs uncomment this call
+# visualize_price_trend()
