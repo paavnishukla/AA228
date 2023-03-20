@@ -497,5 +497,5 @@ function main()
     end
 end
 
-# main()
-visualize_price_trend()
+main()
+# visualize_price_trend()
