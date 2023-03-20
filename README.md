@@ -28,11 +28,11 @@ Below are the details of the files in the repo:
 Please run the following command from the root repo
 
 #### For training over all files in dataset/train/
-'''
+```
 julia qlearning.jl
-'''
+```
 
 #### For evaluating performance of the structured learning algorithm (Q-learning) over a test file
-'''
+```
 julia qlearning.jl <test_file>
-'''
+```
