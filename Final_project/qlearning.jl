@@ -4,6 +4,8 @@ using DelimitedFiles
 using Plots
 using LinearAlgebra
 using Dates, DayCounts
+using Random
+using StatsBase
 
 DATASET_DIR = "dataset/"
 
@@ -28,6 +30,70 @@ end
 function allargmax(a)
     m = maximum(a)
     filter(i -> a[i] == m, eachindex(a))
+end
+
+"""
+    Function to visualize the price trend of 10 flight numbers 
+    for all the routes (source-destination pairs) over 7 days
+    for a departure date of 1st May 2023.
+    
+    The flight numbers are chosen at random, with the constraint
+    that data was available on each of the 6 days data was collected
+"""
+function visualize_price_trend()
+    sources = ["Delhi", "Bangalore", "Kolkata"]
+    # sources = ["Bangalore"]
+    files = readdir(string(DATASET_DIR, "train/"))
+    # Loop over all the files
+    for source in sources
+        unique_flights = Vector{String}()
+        for file in files
+            i_file = string(DATASET_DIR, "train/", file)
+            # Read the CSV file into a DataFrame
+            df = CSV.read(i_file, DataFrame)    
+            # Extract rows with the particular source
+            fil_df = filter(row -> row[5] == source, df)
+            # concatenate FlightCode, NumFlight into a single column
+            fil_df.Flight_Id = string.(fil_df.FlightCode, fil_df.NumFlight)
+            if isempty(unique_flights)
+                unique_flights = unique(fil_df[!, size(fil_df, 2)])
+                # println(source, unique_flights)
+            else
+                unique_flights = intersect(unique_flights, unique(fil_df[!, size(fil_df, 2)]))
+                # println(source, unique_flights)
+            end
+        end
+
+        # Choose 10 random flight IDs from the unique list for each route
+        unique_flights = sample(unique_flights, 10, replace=false)
+        # println(source, unique_flights)
+
+        # Get the price of these 10 flights over the 7 days 
+        # Plotting data contains 7 price points for each of the 10 flights
+        plot_data = Dict{String, Vector{Float64}}()
+        x = ["13 Mar", "14 Mar", "15 Mar", "16 Mar", "18 Mar", "19 Mar"]
+        p = plot(title = "Flight Price vs Time", lw = 2)
+        for flight in unique_flights
+            price_data = Vector{Float64}()
+            for file in files
+                i_file = string(DATASET_DIR, "train/", file)
+                # Read the CSV file into a DataFrame
+                df = CSV.read(i_file, DataFrame)    
+                # concatenate FlightCode, NumFlight into a single column
+                df.Flight_Id = string.(df.FlightCode, df.NumFlight)
+                # Extract rows with the particular source
+                df = filter(row -> row[11] == flight, df)
+                price = df[1, 9] 
+                push!(price_data, price)
+            end
+            # println(price_data)
+            plot_data[flight] = price_data
+            
+            # Plot the data
+            plot!(p, x, price_data, xlabel = "Dates", ylabel = "Price in INR", label = flight)
+        end
+        savefig(string(source, "_price_trend.png"))
+    end
 end
 
 """
@@ -431,4 +497,5 @@ function main()
     end
 end
 
-main()
+# main()
+visualize_price_trend()
